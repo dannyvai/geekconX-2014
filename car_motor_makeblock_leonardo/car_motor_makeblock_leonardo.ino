@@ -75,7 +75,7 @@ unsigned long TimeNoComm = 0;
 
 // —————————————————————————  Motors
 int motor_left[] = {  6, 7 };
-int motor_right[]d = {  5, 4};
+int motor_right[] = {  5, 4};
 
 // ————————————————————————— Setup
 void setup() {
