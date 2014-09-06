@@ -5,7 +5,7 @@
 #include <nRF24L01.h>
 #include <MirfHardwareSpiDriver.h>
 
-const char beginChar=255;
+const byte  headerChars[3]={255,254,100};
 
 void setup(){
   Serial.begin(9600);
@@ -20,7 +20,7 @@ void setup(){
 
 void loop(){
 
-  char sendingnum=0;
+  byte header[3]={0,0,0};
   char sendArray[MSGLEN];
   boolean  sendFlag=false;
 
@@ -28,29 +28,39 @@ void loop(){
 
   if (Serial.available() > 0) 
   {
-    sendingnum = Serial.read();
-    //      Serial.print(sendingnum);
-    if (sendingnum==beginChar)
+     header[0] = (byte)Serial.read();
+if (header[0]== headerChars[0])
+{
+
+  while (Serial.available() <= 0) {  }
+   header[1] =  (byte)Serial.read();
+  while (Serial.available() <= 0) {}
+    header[2] =  (byte)Serial.read();
+    if (header[1] ==headerChars[1] &&   (header[2] ==headerChars[2] ))
     {
+        
+      
       int i=0;
       while(!sendFlag)
   {
     if (Serial.available() > 0) 
   {
-        sendArray[i]= Serial.read();
+        sendArray[i]= (byte)Serial.read();
         i++;
   }
     if (i>MSGLEN)
       sendFlag=true;
-    
+//  for (int zzz=0; zzz<3;zzz++)   Serial.print( (char)header[zzz] ); 
+ //  for (int zzz=0; zzz<MSGLEN;zzz++)   Serial.print( (char)sendArray[zzz] ); 
     }
-    }
+  }
+  }
   }
   if (sendFlag)
   {
     Mirf.send((byte *)sendArray);
-   // for (int i=0; i<3;i++)   Serial.print( sendArray[i] ); 
-  //  Serial.println( sendArray[3]);
+  //  for (int i=0; i<MSGLEN;i++)   Serial.print( sendArray[i] ); 
+   //Serial.println( sendArray[4]);
     while(Mirf.isSending()){
     }
   }

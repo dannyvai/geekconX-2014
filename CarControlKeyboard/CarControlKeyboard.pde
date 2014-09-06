@@ -7,7 +7,7 @@
 import processing.serial.*;
 
 Serial port;
-String portname = "/dev/ttyACM0";  
+String portname = "COM6";//"/dev/ttyACM0";  
 int baudrate = 9600;
 int value = 0;  
  
@@ -20,11 +20,14 @@ boolean pinFlag = false;
 float xOffset = 0.0; 
 float yOffset = 0.0; 
 float radius = 0.0;
-final char maxSpeed=254;
-int speedL = 128;
+final byte maxSpeed=(byte)254;
+int speedL = 230;
 int speedR = 254;
- char xDir = 0;
-  char yDir = 0;
+ byte xDir = 0;
+  byte yDir = 0;
+int iii1=1;
+int iii2=0;
+int iii3=0;
 void setup() 
 {
     port = new Serial(this, portname, baudrate);
@@ -39,7 +42,9 @@ void setup()
 void draw() 
 { 
   background(0);
-
+  boolean stop=false;
+  boolean leds=false;
+  
   if(locked) { 
   switch (key) {
    case 'a':
@@ -69,47 +74,81 @@ void draw()
    case 56:
    xDir = 1;
    yDir = 1;      
-    break;             
+    break;  
+   case 'q':
+    stop=true;     
+    break; 
+   case 'w':
+    leds=true; 
+if (iii1==1) {iii1=0;iii2=1;}
+else if (iii2==1) {iii2=0;iii3=1;}
+else if (iii3==1) {iii3=0;iii1=1;}
+    break;     
+  
    default: 
     locked=false;
   }
   }
-
-  // Test if the cursor is over the box 
-/*  if (mouseX > bx-boxSize && mouseX < bx+boxSize && 
-      mouseY > by-boxSize && mouseY < by+boxSize) {
-    overBox = true;  
-    if(!locked) { 
-      stroke(255); 
-      fill(153);
-    } 
-  } else {
-    stroke(153);
-    fill(153);
-    overBox = false;
-  }*/
    ellipse(width/2.0, height/2.0, 20, 20); 
   // Draw the box
   float RELbx =  width/2.0 - ( ((float)xDir - 0.5)*2 )*(float)speedL ;
 float RELby =   height/2.0 -( ((float)yDir - 0.5)*2 )*(float)speedR;
   rect(RELbx , RELby , boxSize, boxSize);
 
-  char xPower = (char)speedL;
-  char yPower = (char)speedR;
-  if ((xPower>20 || yPower > 20) && locked ) {
+  byte xPower = (byte)speedL;
+  byte yPower = (byte)speedR;
+  if (((char)xPower>20 || (char)yPower > 20) && locked ) {
   port.write(255);
-  port.write(xPower);
-  port.write(xDir);
-  port.write(yPower);
-  port.write(yDir);  
-  port.write(1);  
-//   while (port.available() > 0) {
-//    int inByte = port.read();
-//    println(inByte);
-//  }
+  port.write(254);
+  port.write(100);
+  port.write(2);
+  if (stop)
+  {
+   port.write(5);
+   port.write(0);
+   port.write(0);
+   port.write(0);
   }
+  else if (leds)
+  {
+   port.write(6);
+   port.write(100*iii1);
+   port.write(100*iii2);
+   port.write(100*iii3);    
+  }
+  else
+  {
+     
+ switch (2*xDir + yDir)
+  {
+    case 0:
+    port.write(2);
+    break;
+    case 1: 
+    port.write(4);
+    break;
+    case 2: 
+    port.write(3);
+    break;
+    case 3: 
+    port.write(1);
+    break;    
+  }
+  port.write(xPower);
+  port.write(yPower);
+  port.write(1);  
+  }
+  //          print(":");
+  //     for (int iii=0;iii<6;iii++) {
+  // while (port.available() > 0) { 
+  // char inByte = (char)port.read();
+  //  println((int)inByte);
+  // }
+//  }
   println("X:" + (int)xPower + "(" + (int)xDir + ")" + " Y:" + (int)yPower + "(" + (int)yDir + ")"  );
+  }
 }
+
 
 
 void keyPressed()
