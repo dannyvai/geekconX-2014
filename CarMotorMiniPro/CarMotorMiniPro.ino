@@ -1,5 +1,5 @@
 
-#define MYID 2
+#define MYID 5
 #define DEBUG 1
 
 #define MTRLFTPIN1 2
@@ -118,10 +118,11 @@ void loop() {
      analogWrite(ENABLEMOTORL, data[2]  );
      analogWrite(ENABLEMOTORR, data[3] - (255 - left2RightDiff)  );         
      }
+     TimeNoComm = millis();
    }
    
  }
- TimeNoComm = millis();
+ 
  }
 
 if ( (millis() - TimeNoComm) > DT2STOP)

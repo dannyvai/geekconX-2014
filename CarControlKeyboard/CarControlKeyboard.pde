@@ -5,6 +5,8 @@
 }
 */
 import processing.serial.*;
+byte MYID=3;
+boolean allGo=false;
 
 Serial port;
 String portname = "COM6";//"/dev/ttyACM0";  
@@ -84,7 +86,29 @@ if (iii1==1) {iii1=0;iii2=1;}
 else if (iii2==1) {iii2=0;iii3=1;}
 else if (iii3==1) {iii3=0;iii1=1;}
     break;     
-  
+   case '1':
+    MYID=1; 
+    allGo = false;       
+    break;   
+   case '3':
+    MYID=2; 
+    allGo = false;       
+    break;  
+    case '5':
+    MYID=3;   
+    allGo = false;       
+    break;  
+    case '7':
+    allGo = false;       
+    MYID=4;     
+    break;
+    case '9':
+    MYID=5; 
+    allGo = false;      
+    break;     
+    case '0':
+    allGo = true;     
+    break;       
    default: 
     locked=false;
   }
@@ -98,28 +122,19 @@ float RELby =   height/2.0 -( ((float)yDir - 0.5)*2 )*(float)speedR;
   byte xPower = (byte)speedL;
   byte yPower = (byte)speedR;
   if (((char)xPower>20 || (char)yPower > 20) && locked ) {
-  port.write(255);
-  port.write(254);
-  port.write(100);
-  port.write(2);
-  if (stop)
-  {
+    if (allGo) MYID=5;
+    do {
+  port.write(255);   port.write(254);   port.write(100);
+  port.write(MYID);
+  if (stop)   {
    port.write(5);
    port.write(0);
    port.write(0);
-   port.write(0);
-  }
-  else if (leds)
-  {
-   port.write(6);
-   port.write(100*iii1);
-   port.write(100*iii2);
-   port.write(100*iii3);    
-  }
-  else
-  {
-     
- switch (2*xDir + yDir)
+   port.write(0);  }
+  else if (leds)   {
+   port.write(6);    port.write(100*iii1);     port.write(100*iii2);     port.write(100*iii3);   }
+  else   {
+  switch (2*xDir + yDir)
   {
     case 0:
     port.write(2);
@@ -134,10 +149,10 @@ float RELby =   height/2.0 -( ((float)yDir - 0.5)*2 )*(float)speedR;
     port.write(1);
     break;    
   }
-  port.write(xPower);
-  port.write(yPower);
-  port.write(1);  
+  port.write(xPower);  port.write(yPower);  port.write(1);  
   }
+  if (allGo) MYID--;
+    } while ( allGo && MYID>0 );
   //          print(":");
   //     for (int iii=0;iii<6;iii++) {
   // while (port.available() > 0) { 
