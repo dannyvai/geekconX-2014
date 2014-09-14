@@ -1,6 +1,8 @@
 
-#define MYID 5
-#define DEBUG 1
+#define MYID 3
+#define DEBUG 0
+#define GAPRML 0
+#define GAPRMLSTOP 0
 
 #define MTRLFTPIN1 2
 #define MTRLFTPIN2 5
@@ -10,8 +12,6 @@
 #define ENABLEMOTORR 10
 #define LEDSPIN 6
 
-#define GAPRML 25
-#define GAPRMLSTOP 5
 #define MSGLEN 5
 #define DT2STOP 100
 
@@ -69,7 +69,7 @@ void loop() {
  if (DEBUG)  Serial.println(":");
    if (DEBUG) { for (int i=0; i<MSGLEN;i++)   Serial.println( (int)data[i] ); }
 
- if (data[0] ==MYID ) {
+ if (data[0] ==MYID ||  data[0] ==0 ) {
 
    switch (data[1])
    {
@@ -78,16 +78,20 @@ void loop() {
       left2RightStopDiff = data[3];
      break;
      case 1: // FW
-     drive_forward();
+//     drive_forward();
+      drive_backward();
      break;     
      case 2: // BW
-     drive_backward();
+ //    drive_backward();
+     drive_forward();
      break;   
      case 3: // Left
-     turn_left();
+//     turn_left();
+     turn_right();
      break;     
      case 4: // Right
-     turn_right();
+//     turn_right();
+     turn_left();
      break;  
      case 5: // Stop  +  Stop procedure
      motor_stop();

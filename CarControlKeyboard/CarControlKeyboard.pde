@@ -122,8 +122,8 @@ float RELby =   height/2.0 -( ((float)yDir - 0.5)*2 )*(float)speedR;
   byte xPower = (byte)speedL;
   byte yPower = (byte)speedR;
   if (((char)xPower>20 || (char)yPower > 20) && locked ) {
-    if (allGo) MYID=5;
-    do {
+    if (allGo) MYID=0;
+//    do {
   port.write(255);   port.write(254);   port.write(100);
   port.write(MYID);
   if (stop)   {
@@ -151,8 +151,8 @@ float RELby =   height/2.0 -( ((float)yDir - 0.5)*2 )*(float)speedR;
   }
   port.write(xPower);  port.write(yPower);  port.write(1);  
   }
-  if (allGo) MYID--;
-    } while ( allGo && MYID>0 );
+//  if (allGo) MYID--;
+ //   } while ( allGo && MYID>0 );
   //          print(":");
   //     for (int iii=0;iii<6;iii++) {
   // while (port.available() > 0) { 
