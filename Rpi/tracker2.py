@@ -4,8 +4,8 @@ import time
 cam = cv2.VideoCapture(1)
 
 ts = time.time()
-minr = 0
-maxr = 0
+minr = 50
+maxr = 1000
 
 while True:
 	s,img = cam.read()

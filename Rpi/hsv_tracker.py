@@ -54,7 +54,7 @@ def trackFilteredObject(threshold,img):
 				detect_area = w*h # cv2.contourArea(contours[idx])
 				#cv2.drawContours(img,contours[idx],-1,(0,0,255),5)
 				#print detect_area
-				if detect_area > 100:	
+				if detect_area > 300:	
 					
 					cv2.rectangle(img,(x,y),(x+w,y+h),(0,0,255),2)
 					#print detect_area 
@@ -143,11 +143,11 @@ while True:
 	threshold = cv2.inRange(img_hsv,(h_min_val,s_min_val,v_min_val),(h_max_val,s_max_val,v_max_val))
 
 	threshold = morph(threshold)
-	cv2.imshow("binary",threshold)
+	#cv2.imshow("binary",threshold)
 	trackFilteredObject(threshold,img_rgb)
 #	drawObject(threshold,100,100)
 
 	cv2.imshow("true_image",img_rgb)
-	cv2.imshow("hsv",img_hsv)
+	#cv2.imshow("hsv",img_hsv)
 	#cv2.imshow("binary",threshold)
 	cv2.waitKey(1)
