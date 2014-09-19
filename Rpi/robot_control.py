@@ -2,7 +2,7 @@ import serial
 from threading import Thread
 import time
 
-ser = serial.Serial('/dev/ttyACM0',baudrate=9600)
+ser = serial.Serial('/dev/ttyACM1',baudrate=9600)
 
 tts = 0.01
 
@@ -60,10 +60,10 @@ def turn_off():
 	ser.write('j')
 
 def claw_open():
-	ser.write('h')
+	ser.write('k')
 
 def claw_close():
-	ser.write('y')
+	ser.write('i')
 
 def mov_z():
 	pass

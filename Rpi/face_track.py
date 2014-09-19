@@ -43,7 +43,7 @@ def mov_to_face(x,y,w,h):
                 rbc.mov_down()
 
 	if was_movment == 0:
-		if w > 120 and h > 120:
+		if w > 170 and h > 170:
 			for i in range(0,times):
 				rbc.claw_close()	
 		rbc.turn_on()
