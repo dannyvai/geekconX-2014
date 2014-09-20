@@ -17,8 +17,8 @@ current_depth = 861
 #########################
 #	Network 	#
 #########################
-my_ip = "10.14.4.164"
-ip = "10.14.4.157"
+my_ip = "10.0.0.1"
+ip = "10.0.0.2"
 port = 5001
 
 
@@ -29,9 +29,9 @@ port = 5001
 img_width = 640
 img_height = 480
 
-bounding_box_x_min = 0
+bounding_box_x_min = 50
 bounding_box_x_max = 510
-bounding_box_y_min = 0
+bounding_box_y_min = 50
 bounding_box_y_max = 400
 
 
