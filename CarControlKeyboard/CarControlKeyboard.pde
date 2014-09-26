@@ -5,11 +5,11 @@
 }
 */
 import processing.serial.*;
-byte MYID=3;
+byte MYID=2;
 boolean allGo=false;
 
 Serial port;
-String portname = "COM6";//"/dev/ttyACM0";  
+String portname = "COM16";//"/dev/ttyACM0";  
 int baudrate = 9600;
 int value = 0;  
  
@@ -23,7 +23,7 @@ float xOffset = 0.0;
 float yOffset = 0.0; 
 float radius = 0.0;
 final byte maxSpeed=(byte)254;
-int speedL = 230;
+int speedL = 254;
 int speedR = 254;
  byte xDir = 0;
   byte yDir = 0;
@@ -161,7 +161,8 @@ float RELby =   height/2.0 -( ((float)yDir - 0.5)*2 )*(float)speedR;
   // }
 //  }
   println("X:" + (int)xPower + "(" + (int)xDir + ")" + " Y:" + (int)yPower + "(" + (int)yDir + ")"  );
-  }
+//delay(100);  
+}
 }
 
 
