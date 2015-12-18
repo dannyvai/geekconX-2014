@@ -1,0 +1,84 @@
+function CarData = sendCommand(carInd,CarData,serialPort)
+distRes =50;
+turnPower =180;
+FWpower = [  180 220; 180 180];
+if ~isfield(CarData(carInd),'reqPos') || isempty(CarData(carInd).reqPos)
+    return
+end
+turnCounter = 0;
+if norm(CarData(carInd).predState(1:2) - CarData(carInd).reqPos) > distRes
+    if (CarData(carInd).az >315 || CarData(carInd).az < 45) || (CarData(carInd).az >135 && CarData(carInd).az < 225)
+        if abs(CarData(carInd).reqPos(1) - CarData(carInd).predState(1)) > distRes
+            if (CarData(carInd).reqPos(1) > CarData(carInd).predState(1) && (CarData(carInd).az >315 || CarData(carInd).az < 45)) || ...
+                    (CarData(carInd).reqPos(1) < CarData(carInd).predState(1) && (CarData(carInd).az >135 && CarData(carInd).az < 225))
+                actionVec = [1 FWpower(carInd,:) 0];
+            else
+                turnCounter = 2;
+                actionVec = [3 0 turnPower 0];
+                CarData(carInd).az = mod(CarData(carInd).az +180,360);
+            end
+        else
+            %turn right or left
+            if (CarData(carInd).reqPos(2) > CarData(carInd).predState(2) && (CarData(carInd).az >315 || CarData(carInd).az < 45)) || ...
+                    (CarData(carInd).reqPos(2) < CarData(carInd).predState(2) && (CarData(carInd).az >135 && CarData(carInd).az < 225))
+                %turn left
+                turnCounter = 1;
+                actionVec = [3 0 turnPower 0];
+                CarData(carInd).az = mod(CarData(carInd).az +90,360);
+            else
+                 %turn right
+                turnCounter = 1;
+                actionVec = [4 0 turnPower 0];
+                CarData(carInd).az = mod(CarData(carInd).az -90,360);
+            end
+        end
+    
+        
+    else
+        if abs(CarData(carInd).reqPos(2) - CarData(carInd).predState(2)) > distRes
+            if (CarData(carInd).reqPos(2) > CarData(carInd).predState(2) && (CarData(carInd).az > 45 && CarData(carInd).az < 135)) || ...
+                    (CarData(carInd).reqPos(2) < CarData(carInd).predState(2) && (CarData(carInd).az >225 && CarData(carInd).az < 315))
+                actionVec = [1 FWpower(carInd,:) 0];
+            else
+                turnCounter = 2;
+                actionVec = [3 0 turnPower 0];
+                CarData(carInd).az = mod(CarData(carInd).az +180,360);
+            end
+        else
+            %turn right or left
+            if (CarData(carInd).reqPos(1) > CarData(carInd).predState(1) && (CarData(carInd).az > 45 && CarData(carInd).az < 135)) || ...
+                    (CarData(carInd).reqPos(1) < CarData(carInd).predState(1) && (CarData(carInd).az >225 && CarData(carInd).az < 315))
+                %turn right
+                turnCounter = 1;
+                actionVec = [4 0 turnPower 0];
+                CarData(carInd).az = mod(CarData(carInd).az -90,360);
+            else
+                 %turn left
+                turnCounter = 1;
+                actionVec = [3 0 turnPower 0];
+                CarData(carInd).az = mod(CarData(carInd).az +90,360);
+            end
+        end
+    end
+    a=fread(serialPort,100,'uint8');
+    if turnCounter == 0
+        fwrite(serialPort,uint8([255 254 100 carInd+1 actionVec]));
+
+    else
+        ind = 0;
+        while ind<turnCounter+1
+%         for ind = 1:turnCounter*5+mod(floor(CarData(carInd).az),90)/40+3
+            fwrite(serialPort,uint8([255 254 100 carInd+1 actionVec]));
+            pause(0.05);
+            a=fread(serialPort,1,'uint8');
+            if ~isempty(a)
+                ind = ind+a-48;
+            end
+        end
+        actionVec(1) = 7 - actionVec(1);
+        fwrite(serialPort,uint8([255 254 100 carInd+1 actionVec]));
+    end
+end
+
+
+end
